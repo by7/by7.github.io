@@ -49,6 +49,12 @@ window.addEventListener('load', function () {
         context.moveTo(ev._x, ev._y);
         tool.started = true;
     };
+	
+	this.touchstart = function (ev) {
+        context.beginPath();
+        context.moveTo(ev._x, ev._y);
+        tool.started = true;
+    };
 
     // This function is called every time you move the mouse. Obviously, it only 
     // draws if the tool.started state is set to true (when you are holding down 
@@ -59,9 +65,23 @@ window.addEventListener('load', function () {
         context.stroke();
       }
     };
+	
+	this.touchmove = function (ev) {
+      if (tool.started) {
+        context.lineTo(ev._x, ev._y);
+        context.stroke();
+      }
+    };
 
     // This is called when you release the mouse button.
     this.mouseup = function (ev) {
+      if (tool.started) {
+        tool.mousemove(ev);
+        tool.started = false;
+      }
+    };
+	
+	this.touchend = function (ev) {
       if (tool.started) {
         tool.mousemove(ev);
         tool.started = false;
