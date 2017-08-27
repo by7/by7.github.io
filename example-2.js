@@ -34,9 +34,9 @@ window.addEventListener('load', function () {
     canvas.addEventListener('mousedown', ev_canvas, false);
     canvas.addEventListener('mousemove', ev_canvas, false);
     canvas.addEventListener('mouseup',   ev_canvas, false);
-	canvas.addEventListener('touchstart',   ev_canvas, false);
-	canvas.addEventListener('touchmove',   ev_canvas, false);
-	canvas.addEventListener('touchend',   ev_canvas, false);
+	canvas.addEventListener('touchstart',   ev_canvas_touch, false);
+	canvas.addEventListener('touchmove',   ev_canvas_touch, false);
+	canvas.addEventListener('touchend',   ev_canvas_touch, false);
   }
 
   // This painting tool works like a drawing pencil which tracks the mouse 
@@ -55,7 +55,7 @@ window.addEventListener('load', function () {
 	
 	this.touchstart = function (ev) {
         context.beginPath();
-        context.moveTo(ev.touches[0]._x, ev.touches[0]._y);
+        context.moveTo(ev._x, ev._y);
         tool.started = true;
     };
 
@@ -71,7 +71,7 @@ window.addEventListener('load', function () {
 	
 	this.touchmove = function (ev) {
       if (tool.started) {
-        context.lineTo(ev.touches[0]._x, ev.touches[0]._y);
+        context.lineTo(ev._x, ev._y);
         context.stroke();
       }
     };
@@ -107,6 +107,22 @@ window.addEventListener('load', function () {
     var func = tool[ev.type];
     if (func) {
       func(ev);
+    }
+  }
+  
+  function ev_canvas_touch (ev) {
+    if (ev.touches[0].layerX || ev.touches[0].layerX == 0) { // Firefox
+      ev._x = ev.touches[0].layerX;
+      ev._y = ev.touches[0].layerY;
+    } else if (ev.touches[0].offsetX || ev.touches[0].offsetX == 0) { // Opera
+      ev._x = ev.touches[0].offsetX;
+      ev._y = ev.touches[0].offsetY;
+    }
+
+    // Call the event handler of the tool.
+    var func = tool[ev.touches[0].type];
+    if (func) {
+      func(ev.touches[0]);
     }
   }
 
