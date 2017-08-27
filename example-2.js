@@ -55,7 +55,7 @@ window.addEventListener('load', function () {
 	
 	this.touchstart = function (ev) {
         context.beginPath();
-        context.moveTo(ev._x, ev._y);
+        context.moveTo(ev.touches[0]._x, ev.touches[0]._y);
         tool.started = true;
     };
 
@@ -71,7 +71,7 @@ window.addEventListener('load', function () {
 	
 	this.touchmove = function (ev) {
       if (tool.started) {
-        context.lineTo(ev._x, ev._y);
+        context.lineTo(ev.touches[0]._x, ev.touches[0]._y);
         context.stroke();
       }
     };
@@ -86,7 +86,7 @@ window.addEventListener('load', function () {
 	
 	this.touchend = function (ev) {
       if (tool.started) {
-        tool.mousemove(ev);
+        tool.touchmove(ev);
         tool.started = false;
       }
     };
